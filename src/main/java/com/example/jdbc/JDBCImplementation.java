@@ -33,7 +33,14 @@ public class JDBCImplementation {
             customer.setZipCode("13133");*/
 
             // Get a customer by id using CustomerDAO
+            /*Customer customer=customerDAO.findById(1000);
+            System.out.println(customer);*/
+
+            // Update a record by id
             Customer customer=customerDAO.findById(1000);
+            System.out.println(customer);
+            customer.setEmail("modified_email@gmail.com");
+            customer=customerDAO.update(customer);
             System.out.println(customer);
 
             customerDAO.create(customer);
