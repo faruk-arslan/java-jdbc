@@ -4,12 +4,15 @@ import com.example.jdbc.util.DataAccessObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 public class CustomerDAO extends DataAccessObject<Customer> {
     private static final String INSERT= "INSERT INTO customer (first_name, last_name, email," +
             "phone, address, city, state, zipcode) VALUES(?,?,?,?,?,?,?,?)";
+    private static final String GET_BY_ID="SELECT customer_id, first_name, last_name, email," +
+            "phone, address, city, state, zipcode FROM customer WHERE customer_id = ?";
 
     public CustomerDAO(Connection connection) {
         super(connection);
@@ -17,7 +20,26 @@ public class CustomerDAO extends DataAccessObject<Customer> {
 
     @Override
     public Customer findById(long id) {
-        return null;
+        Customer customer=new Customer();
+        try(PreparedStatement statement=this.connection.prepareStatement(GET_BY_ID)){
+            statement.setLong(1,id);
+            ResultSet rs=statement.executeQuery();
+            while (rs.next()){
+                customer.setId(rs.getLong("customer_id"));
+                customer.setFirstName(rs.getString("first_name"));
+                customer.setLastName(rs.getString("last_name"));
+                customer.setPhone(rs.getString("email"));
+                customer.setEmail(rs.getString("phone"));
+                customer.setAddress(rs.getString("address"));
+                customer.setState(rs.getString("city"));
+                customer.setCity(rs.getString("state"));
+                customer.setZipCode(rs.getString("zipcode"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return customer;
     }
 
     @Override

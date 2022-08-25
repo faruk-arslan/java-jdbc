@@ -19,10 +19,10 @@ public class JDBCImplementation {
             }*/
 
             Connection connection=connectionManager.getConnection();
+            CustomerDAO customerDAO=new CustomerDAO(connection);
 
             // Create a customer record
-            CustomerDAO customerDAO=new CustomerDAO(connection);
-            Customer customer=new Customer();
+            /*Customer customer=new Customer();
             customer.setFirstName("Name1");
             customer.setLastName("Surname1");
             customer.setEmail("person1@gmail.com");
@@ -30,7 +30,11 @@ public class JDBCImplementation {
             customer.setAddress("25th Street CA");
             customer.setCity("Monterey");
             customer.setState("CA");
-            customer.setZipCode("13133");
+            customer.setZipCode("13133");*/
+
+            // Get a customer by id using CustomerDAO
+            Customer customer=customerDAO.findById(1000);
+            System.out.println(customer);
 
             customerDAO.create(customer);
         }catch (SQLException e){
