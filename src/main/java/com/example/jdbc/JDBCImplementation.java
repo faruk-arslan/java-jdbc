@@ -30,20 +30,45 @@ public class JDBCImplementation {
             customer.setAddress("25th Street CA");
             customer.setCity("Monterey");
             customer.setState("CA");
-            customer.setZipCode("13133");*/
+            customer.setZipCode("13133");
+            customerDAO.create(customer);*/
 
             // Get a customer by id using CustomerDAO
             /*Customer customer=customerDAO.findById(1000);
             System.out.println(customer);*/
 
             // Update a record by id
-            Customer customer=customerDAO.findById(1000);
+            /*Customer customer=customerDAO.findById(1000);
             System.out.println(customer);
             customer.setEmail("modified_email@gmail.com");
             customer=customerDAO.update(customer);
-            System.out.println(customer);
+            System.out.println(customer);*/
 
-            customerDAO.create(customer);
+            // Get a customer by id using CustomerDAO
+            /*Customer customer=customerDAO.findById(1000);
+            System.out.println(customer.getFirstName());
+            System.out.println(customer.getId());
+            System.out.println(customer.getId());*/
+
+            // Create, update and delete a record
+            Customer customer=new Customer();
+            customer.setFirstName("Name1");
+            customer.setLastName("Surname1");
+            customer.setEmail("person1@gmail.com");
+            customer.setPhone("5846548654");
+            customer.setAddress("25th Street CA");
+            customer.setCity("Monterey");
+            customer.setState("CA");
+            customer.setZipCode("13133");
+
+            Customer newCustomer=customerDAO.create(customer);
+            System.out.println(newCustomer);
+            newCustomer=customerDAO.findById(newCustomer.getId());
+            System.out.println(newCustomer);
+            newCustomer.setEmail("modified_email@gmail.com");
+            newCustomer=customerDAO.update(newCustomer);
+            System.out.println(newCustomer);
+            customerDAO.delete(newCustomer.getId());
         }catch (SQLException e){
             e.printStackTrace();
         }

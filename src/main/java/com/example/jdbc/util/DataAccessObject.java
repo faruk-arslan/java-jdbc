@@ -24,7 +24,7 @@ public abstract class DataAccessObject <T extends DataTransferObject>{
 
     protected int getLastVal(String sequence){
         int key = 0;
-        String sql = LAST_VAL + sequence;
+        String sql = LAST_VAL + " " +sequence;
         try(Statement statement = connection.createStatement()){
             ResultSet rs = statement.executeQuery(sql);
             while(rs.next()){
