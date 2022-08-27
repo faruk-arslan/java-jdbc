@@ -20,6 +20,7 @@ public class JDBCImplementation {
 
             Connection connection=connectionManager.getConnection();
             CustomerDAO customerDAO=new CustomerDAO(connection);
+            OrderDAO orderDAO=new OrderDAO(connection);
 
             // Create a customer record
             /*Customer customer=new Customer();
@@ -51,7 +52,7 @@ public class JDBCImplementation {
             System.out.println(customer.getId());*/
 
             // Create, update and delete a record
-            Customer customer=new Customer();
+            /*Customer customer=new Customer();
             customer.setFirstName("Name1");
             customer.setLastName("Surname1");
             customer.setEmail("person1@gmail.com");
@@ -68,7 +69,12 @@ public class JDBCImplementation {
             newCustomer.setEmail("modified_email@gmail.com");
             newCustomer=customerDAO.update(newCustomer);
             System.out.println(newCustomer);
-            customerDAO.delete(newCustomer.getId());
+            customerDAO.delete(newCustomer.getId());*/
+
+            // Get order by id using OrderDAO
+            Order order=orderDAO.findById(1197);
+            System.out.println(order);
+
         }catch (SQLException e){
             e.printStackTrace();
         }
