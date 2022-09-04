@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerDAO extends DataAccessObject<Customer> {
@@ -16,6 +17,11 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     private static final String UPDATE="UPDATE customer SET first_name = ?, last_name = ?, email = ?," +
             " phone = ?, address = ?, city = ?, state = ?, zipcode = ? WHERE customer_id = ?";
     private static final String DELETE="DELETE FROM customer where customer_id = ?";
+    private static final String GET_SORTED_LIMITED="SELECT customer_id, first_name, last_name, email," +
+            "phone, address, city, state, zipcode FROM customer ORDER BY first_name, last_name LIMIT ?";
+    private static final String GET_SORTED_LIMITED_PAGED="SELECT customer_id, first_name, last_name, email," +
+            "phone, address, city, state, zipcode FROM customer ORDER BY first_name, last_name LIMIT ? OFFSET ?";
+
 
     public CustomerDAO(Connection connection) {
         super(connection);
@@ -102,5 +108,59 @@ public class CustomerDAO extends DataAccessObject<Customer> {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Customer> getCustomersSortedLimited(int limit){
+        List<Customer> customers=new ArrayList<>();
+        Customer customer=null;
+        try(PreparedStatement preparedStatement=connection.prepareStatement(GET_SORTED_LIMITED)) {
+            preparedStatement.setInt(1, limit);
+            ResultSet rs=preparedStatement.executeQuery();
+            while (rs.next()){
+                customer=new Customer();
+                customer.setId(rs.getLong("customer_id"));
+                customer.setFirstName(rs.getString("first_name"));
+                customer.setLastName(rs.getString("last_name"));
+                customer.setPhone(rs.getString("phone"));
+                customer.setEmail(rs.getString("email"));
+                customer.setAddress(rs.getString("address"));
+                customer.setState(rs.getString("city"));
+                customer.setCity(rs.getString("state"));
+                customer.setZipCode(rs.getString("zipcode"));
+                customers.add(customer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return customers;
+    }
+
+    public List<Customer> getCustomersSortedLimitedPaged(int limit, int pageNumber){
+        List<Customer> customers=new ArrayList<>();
+        Customer customer=null;
+        int offset=(pageNumber-1)*limit;
+        try(PreparedStatement preparedStatement=connection.prepareStatement(GET_SORTED_LIMITED_PAGED)) {
+            preparedStatement.setInt(1, limit);
+            preparedStatement.setInt(2, offset);
+            ResultSet rs=preparedStatement.executeQuery();
+            while (rs.next()){
+                customer=new Customer();
+                customer.setId(rs.getLong("customer_id"));
+                customer.setFirstName(rs.getString("first_name"));
+                customer.setLastName(rs.getString("last_name"));
+                customer.setPhone(rs.getString("phone"));
+                customer.setEmail(rs.getString("email"));
+                customer.setAddress(rs.getString("address"));
+                customer.setState(rs.getString("city"));
+                customer.setCity(rs.getString("state"));
+                customer.setZipCode(rs.getString("zipcode"));
+                customers.add(customer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return customers;
     }
 }

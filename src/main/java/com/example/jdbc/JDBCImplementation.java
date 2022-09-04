@@ -77,8 +77,20 @@ public class JDBCImplementation {
             System.out.println(order);*/
 
             // Run the stored procedure
-            List<Order> orders=orderDAO.findOrdersForCustomer(789);
-            orders.forEach(System.out::println);
+            /*List<Order> orders=orderDAO.findOrdersForCustomer(789);
+            orders.forEach(System.out::println);*/
+
+            // Get customers sorted and limited
+            /*List<Customer> customers=customerDAO.getCustomersSortedLimited(20);
+            customers.forEach(System.out::println);*/
+
+            // Get customers sorted, limited and paged
+            for (int i = 1; i < 10; i++) {
+                System.out.println("Page: "+i);
+                List<Customer> customers=customerDAO.getCustomersSortedLimitedPaged(20,i);
+                customers.forEach(System.out::println);
+                System.out.println();
+            }
 
         }catch (SQLException e){
             e.printStackTrace();
