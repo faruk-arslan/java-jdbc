@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class JDBCImplementation {
     public static void main(String[] args) {
@@ -72,8 +73,12 @@ public class JDBCImplementation {
             customerDAO.delete(newCustomer.getId());*/
 
             // Get order by id using OrderDAO
-            Order order=orderDAO.findById(1197);
-            System.out.println(order);
+            /*Order order=orderDAO.findById(1197);
+            System.out.println(order);*/
+
+            // Run the stored procedure
+            List<Order> orders=orderDAO.findOrdersForCustomer(789);
+            orders.forEach(System.out::println);
 
         }catch (SQLException e){
             e.printStackTrace();

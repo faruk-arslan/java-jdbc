@@ -13,6 +13,7 @@ public class OrderDAO extends DataAccessObject<Order> {
 
     private static final String GET_BY_ID="SELECT c.first_name as \"customer_first_name\", c.last_name as \"customer_last_name\", c.email as \"customer_email\",  o.order_id, o.creation_date, o.total_due, o.status,  s.first_name as \"salesperson_first_name\", s.last_name as \"salesperson_last_name\", s.email as \"salesperson_email\", oi.quantity as \"order_item_quantity\", p.code as \"product_code\", p.name as \"product_name\", p.size as \"product_size\", p.variety as \"product_variety\", p.price as \"product_price\"  FROM orders o  join customer c on o.customer_id=c.customer_id join salesperson s on o.salesperson_id=s.salesperson_id join order_item oi on oi.order_id=o.order_id join product p on oi.product_id=p.product_id  where o.order_id=?";
 
+    private static final String GET_FOR_CUST="SELECT * FROM get_orders_by_customer(?)";
     public OrderDAO(Connection connection) {
         super(connection);
     }
@@ -76,5 +77,50 @@ public class OrderDAO extends DataAccessObject<Order> {
     @Override
     public void delete(long id) {
 
+    }
+
+    public List<Order> findOrdersForCustomer(long customerId){
+        List<Order> orders =new ArrayList<>();
+        try(PreparedStatement statement=this.connection.prepareStatement(GET_FOR_CUST)) {
+            statement.setLong(1, customerId);
+            ResultSet resultSet=statement.executeQuery();
+            long orderId=0;
+            Order order=null;
+            while (resultSet.next()){
+                long localOrderId=resultSet.getLong(4);
+                if(orderId!=localOrderId){
+                    order = new Order();
+                    orders.add(order);
+                    // Set order details
+                    order.setId(localOrderId);
+                    order.setSalespersonFirstName(resultSet.getString(1));
+                    order.setCustomerLastName(resultSet.getString(2));
+                    order.setCustomerEmail(resultSet.getString(3));
+                    order.setSalespersonFirstName(resultSet.getString(8));
+                    order.setSalespersonLastName(resultSet.getString(9));
+                    order.setSalespersonEmail(resultSet.getString(10));
+                    order.setTotalDue(resultSet.getBigDecimal(6));
+                    order.setStatus(resultSet.getString(7));
+                    order.setCreation_date(resultSet.getTimestamp(5));
+                    List<OrderItem> orderItems=new ArrayList<>();
+                    order.setOrderItems(orderItems);
+
+                    orderId= localOrderId;
+                }
+                OrderItem orderItem=new OrderItem();
+                orderItem.setProductSize(resultSet.getInt(14));
+                orderItem.setProductName(resultSet.getString(13));
+                orderItem.setProductCode(resultSet.getString(12));
+                orderItem.setProductVariety(resultSet.getString(15));
+                orderItem.setQuantity(resultSet.getInt(11));
+                orderItem.setProductPrice(resultSet.getBigDecimal(16));
+                // Used as a live list (possible in java pointer logic)
+                order.getOrderItems().add(orderItem);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return orders;
     }
 }
