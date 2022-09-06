@@ -53,7 +53,7 @@ public class JDBCImplementation {
             System.out.println(customer.getId());*/
 
             // Create, update and delete a record
-            /*Customer customer=new Customer();
+            Customer customer=new Customer();
             customer.setFirstName("Name1");
             customer.setLastName("Surname1");
             customer.setEmail("person1@gmail.com");
@@ -70,7 +70,7 @@ public class JDBCImplementation {
             newCustomer.setEmail("modified_email@gmail.com");
             newCustomer=customerDAO.update(newCustomer);
             System.out.println(newCustomer);
-            customerDAO.delete(newCustomer.getId());*/
+            customerDAO.delete(newCustomer.getId());
 
             // Get order by id using OrderDAO
             /*Order order=orderDAO.findById(1197);
@@ -85,12 +85,12 @@ public class JDBCImplementation {
             customers.forEach(System.out::println);*/
 
             // Get customers sorted, limited and paged
-            for (int i = 1; i < 10; i++) {
+            /*for (int i = 1; i < 10; i++) {
                 System.out.println("Page: "+i);
                 List<Customer> customers=customerDAO.getCustomersSortedLimitedPaged(20,i);
                 customers.forEach(System.out::println);
                 System.out.println();
-            }
+            }*/
 
         }catch (SQLException e){
             e.printStackTrace();

@@ -59,6 +59,13 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     @Override
     public Customer update(Customer dto) {
         Customer customer=null;
+        // Disable auto-commit
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         try(PreparedStatement statement=this.connection.prepareStatement(UPDATE)) {
             statement.setString(1, dto.getFirstName());
             statement.setString(2, dto.getLastName());
@@ -70,8 +77,17 @@ public class CustomerDAO extends DataAccessObject<Customer> {
             statement.setString(8, dto.getZipCode());
             statement.setLong(9, dto.getId());
             statement.execute();
+            // Commit before the data read operation
+            connection.commit();
             customer=findById(dto.getId());
         } catch (SQLException e) {
+            // Rollback (can be called any time, not in the catch block particularly)
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                e.printStackTrace();
+                throw new RuntimeException(ex);
+            }
             e.printStackTrace();
             throw new RuntimeException(e);
         }
